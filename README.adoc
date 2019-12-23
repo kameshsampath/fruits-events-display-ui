@@ -24,11 +24,13 @@ cat ./test/sample-ce-data.json |  http -v POST :8080 'Content-Type:application/c
 
 This should return you an HTTP 200 response and you will also notice the web ui is  updated with data from CloudEvent JSON with some extra details.
 
-NOTE: The UI is raw and being improved.
-
 == Application Container Image
 
-The application container image is available at `quay.io/rhdevelopers/fruits-events-display-ui:0.0.1`
+The application container image is available at `quay.io/rhdevelopers/fruits-events-display-ui:v0.0.1`
+
+== Customization
+
+Though this application is meant for Fruits application demo, but it an can be customized. Check the FruitResource class to see the possible customizations.
 
 
 

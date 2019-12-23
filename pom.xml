@@ -14,6 +14,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.version>1.1.0.Final</quarkus.version>
     <surefire-plugin.version>2.22.0</surefire-plugin.version>
+    <skipTests>true</skipTests>
   </properties>
   <dependencyManagement>
     <dependencies>

@@ -1,6 +1,7 @@
 package com.redhat.developers.demos;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,8 +69,8 @@ public class FruitsResource {
         Optional<ZonedDateTime> eventTS = attrs.getTime();
 
         if (eventTS.isPresent()) {
-            LocalDateTime ldt = eventTS.get().toLocalDateTime();
-            feJson.put("time", ldt.toString());
+            LocalTime lt = eventTS.get().toLocalTime();
+            feJson.put("time", lt.toString());
         }
 
         if (data.isPresent()) {
