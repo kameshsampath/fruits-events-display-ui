@@ -1,0 +1,34 @@
+= Fruits Events Display
+
+A https://quarkus.io[Quarkus] application that will handle the https://cloudevents.io[CloudEvents] data and report the same to connected web applications using https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events[Server Sent Events].
+
+Since there will no streaming data in this case, we shall use Emitter to produce the events as and when they receive form the source application. This application could be used a the event sink for the Knative Event sources.
+
+== Build and Run
+
+You can run the application in development mode as shown,
+
+[source,bash]
+----
+mvn clean compile quarkus:dev
+----
+
+Once the application is running you can open the URL http://localhost:8080
+
+Open a new terminal and send a sample cloud event data to the service:
+
+[source,bash]
+----
+cat ./test/sample-ce-data.json |  http -v POST :8080 'Content-Type:application/cloudevents+json'
+----
+
+This should return you an HTTP 200 response and you will also notice the web ui is  updated with data from CloudEvent JSON with some extra details.
+
+NOTE: The UI is raw and being improved.
+
+== Application Container Image
+
+The application container image is available at `quay.io/rhdevelopers/fruits-events-display-ui:0.0.1`
+
+
+
