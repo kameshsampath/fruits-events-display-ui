@@ -1,5 +1,6 @@
 package com.redhat.developers.demos;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -13,6 +14,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -20,8 +23,8 @@ import org.jboss.logging.Logger;
 import org.reactivestreams.Publisher;
 
 import io.cloudevents.CloudEvent;
-import io.cloudevents.v03.AttributesImpl;
-import io.cloudevents.v03.http.Unmarshallers;
+import io.cloudevents.v1.*;
+import io.cloudevents.v1.http.Unmarshallers;
 import io.smallrye.reactive.messaging.annotations.Channel;
 import io.smallrye.reactive.messaging.annotations.Emitter;
 import io.vertx.core.json.JsonObject;
@@ -48,13 +51,20 @@ public class FruitsResource {
     }
 
     @POST
-    @Consumes("application/cloudevents+json")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response fruitsHandler(String cloudEventPayload) {
-        Map<String, Object> httpHeaders = new HashMap<>();
+    public Response fruitsHandler(@Context HttpHeaders httpHeaders,  String cloudEventPayload) {
+        Map<String, Object> headers = new HashMap<>();
+        
+        httpHeaders.getRequestHeaders().forEach((k, v) -> {
+            headers.put(k, v.get(0));
+        });
 
-        CloudEvent<AttributesImpl, Map> event = Unmarshallers.structured(Map.class)
-        .withHeaders(() -> httpHeaders)
+        logger.info("Headers:"+headers);
+
+        CloudEvent<AttributesImpl, Map> event = Unmarshallers
+        .binary(Map.class)
+        .withHeaders(() -> headers)
         .withPayload(() -> cloudEventPayload)
         .unmarshal();
 
@@ -74,9 +84,10 @@ public class FruitsResource {
         }
 
         if (data.isPresent()) {
-            Map data2 = data.get();
-            feJson.put("name", data2.get("name"));
-            feJson.put("sugarLevel", ((Map) data2.get("nutritions")).get("sugar"));
+            Map dataValue = data.get();
+            logger.info("Data value:" + dataValue);
+            feJson.put("name", dataValue.get("name"));
+            feJson.put("sugarLevel", ((Map) dataValue.get("nutritions")).get("sugar"));
         }
 
         fruitEventsEmitter.send(feJson.encodePrettily());

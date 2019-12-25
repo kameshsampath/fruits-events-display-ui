@@ -19,7 +19,13 @@ Open a new terminal and send a sample cloud event data to the service:
 
 [source,bash]
 ----
-cat ./test/sample-ce-data.json |  http -v POST :8080 'Content-Type:application/cloudevents+json'
+cat src/test/sample.json |\
+    http -v POST :8080 \
+    ce-specversion:0.3 \
+    ce-type:low-sugar \
+    ce-time:2019-12-23T12:30:14.128Z \
+    ce-id:ID-fruits-processor-glmls-7fb9bff9cd-5k65g-1577104083727-0-45 \
+    ce-source:camel-source:knativetutorial/fruits-processor
 ----
 
 This should return you an HTTP 200 response and you will also notice the web ui is  updated with data from CloudEvent JSON with some extra details.
