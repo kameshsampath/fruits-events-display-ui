@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -33,6 +34,9 @@ import io.vertx.core.json.JsonObject;
 public class FruitsResource {
 
     Logger logger = Logger.getLogger(FruitsResource.class);
+
+    @Inject
+    Validator validator;
 
     @Inject
     @Channel("fruit-events")
@@ -63,7 +67,7 @@ public class FruitsResource {
         logger.info("Headers:"+headers);
 
         CloudEvent<AttributesImpl, Map> event = Unmarshallers
-        .binary(Map.class)
+        .binary(Map.class,validator)
         .withHeaders(() -> headers)
         .withPayload(() -> cloudEventPayload)
         .unmarshal();
